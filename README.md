@@ -1,59 +1,129 @@
-# Sample Hardhat Project
+# File Integrity Chain 🛡️
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
+A decentralized application (DApp) for verifying the integrity and authenticity of digital documents using the Ethereum blockchain. This project ensures that files have not been tampered with by storing their cryptographic proofs on an immutable ledger.
 
-Try running some of the following tasks:
+![Project Status](https://img.shields.io/badge/Status-Active-green)
+![License](https://img.shields.io/badge/License-MIT-blue)
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.ts
+## 🌟 Key Features
+
+-   **Immutable Records:** Once a file is registered, its record entails a permanent proof of existence and integrity.
+-   **Privacy-First:** Your actual files **never** leave your device. Only a unique cryptographic hash ("digital fingerprint") is stored on the blockchain.
+-   **Purpose-Based Identity:** Files are hashed with a specific "Purpose" (e.g., "Draft" vs "Final"). This allows the same file to be registered for multiple contexts independently.
+-   **Public Verification:** A dedicated portal for third-party verifiers (auditors, employers) to check documents without needing a crypto wallet.
+-   **Modern UI:** Built with a "Drizzle-inspired" dark mode aesthetic, featuring glassmorphism and smooth animations.
+
+## 🛠️ Tech Stack
+
+-   **Frontend:** React (Vite), TypeScript, Tailwind CSS
+-   **Blockchain:** Hardhat (Development Environment), Ethers.js (Interaction)
+-   **Smart Contract:** Solidity
+-   **Styling:** Lucide React (Icons), Custom Animations
+
+## 🚀 Getting Started
+
+Follow these instructions to set up the project locally.
+
+### Prerequisites
+
+-   [Node.js](https://nodejs.org/) (v16 or higher)
+-   [MetaMask](https://metamask.io/) browser extension
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/file-integrity-chain.git
+cd file-integrity-chain
 ```
 
-File Integrity Chain - Presentation Script
-Speaker: [Your Name] Duration: ~5-7 Minutes
+### 2. Backend Setup (Blockchain)
 
-1. Introduction (The Hook)
-"Good morning/afternoon everyone. Today I am presenting File Integrity Chain, a decentralized application designed to solve a critical problem in the digital age: Trust.
+Start a local Ethereum node and deploy the smart contract.
 
-In a world where documents/images can be easily forged or AI-generated, how do you prove that a file you possess is the original, unaltered version issued by a specific authority? My project uses Blockchain technology to create an immutable, tamper-proof record of any file's existence and integrity without the file ever leaving your device."
+```bash
+# Install dependencies
+npm install
 
-2. Tech Stack & Justifications
-"Before I show you the demo, I want to explain the technology that powers this system."
+# Start local Hardhat node (Keep this terminal open!)
+npx hardhat node
+```
 
-Frontend: "I built the interface using React with Vite. I chose Vite because it's extremely fast and lightweight compared to older bundlers like Create-React-App. For styling, I used Tailwind CSS to create a modern, responsive 'Drizzle-like' aesthetic that looks professional and clean."
-Blockchain Interaction: "I used Ethers.js. It's the industry-standard library for connecting a web frontend to the Ethereum blockchain. It handles the wallet connection (MetaMask) and effectively 'talks' to our smart contract."
-Smart Contract Development: "For the backend, I used Hardhat.
-Why Hardhat? It is currently the most robust development environment for Ethereum. It allows me to compile contracts, run a local blockchain node for testing (which we are using right now), and provides detailed debugging specifically for Solidity. It’s essentially the 'VS Code' of smart contract development."
-3. Project Walkthrough (The Demo)
-"The application has three distinct modes, designed for different users."
+Open a **new terminal** to deploy the contract:
 
-A. Register (The Issuer)
-"First is the Register tab. Imagine I am a university issuing a degree or a company signing a contract."
+```bash
+# Deploy contract to the local network (localhost)
+npx hardhat ignition deploy ./ignition/modules/Lock.ts --network localhost
+```
 
-"I select the file locally."
-"I enter a Purpose (e.g., 'Semester 8 Marksheet')."
-"The system generates a SHA-256 hash of the file combined with this purpose. This is my 'Digital Fingerprint'."
-"I sign a transaction using my crypto wallet (MetaMask). This stores the hash, the purpose, and my identity (wallet address) permanently on the blockchain."
-Note: "The actual file never leaves my computer. Only the digital fingerprint is stored, ensuring total privacy."
-B. Verify (The Holder/Recipient)
-"Next is the Verify tab. This is for someone who has the file and wants to check if it's the original."
+> **Note:** Copy the `Deployed to` address from the output. You may need to update it in `frontend/src/contract.ts` if it changes (usually it's deterministic and stays the same).
 
-"I upload the file I received."
-"I enter the claimed purpose."
-"The system re-calculates the fingerprint and queries the blockchain."
-"If the file is modified by even one byte, the fingerprint changes completely, and the blockchain will say 'Invalid'. If it matches, it confirms: 'Yes, this file was issued by [Address] for [Purpose] at [Time]'."
-C. Public (The Third Party)
-"Finally, the Public tab. This is a unique feature. Unlike the other tabs, this does not require the user to have a crypto wallet. It allows anyone—like a potential employer or auditor—to verify a document simply by uploading it. It acts as a read-only interface to the blockchain, lowering the barrier to entry for general users."
+### 3. Frontend Setup
 
-4. Key Questions & Unique Selling Points (Q&A)
-Q: "How is this different from Google Drive or a standard database?" "In a standard database, the admin (Google or the Company) can change records. If they get hacked, your data is compromised. In File Integrity Chain, the record is on the blockchain. Once registered, it is immutable. No one—not even I, the developer—can change the history of that file."
+Connect the web interface to your local blockchain.
 
-Q: "What makes your project unique?" "Two main things:
+```bash
+cd frontend
 
-Purpose-Based Identity: Most systems just hash the file. My system includes the 'Context' or 'Purpose' in the cryptographic identity. This means I can issue the same PDF for two different reasons (e.g., 'Draft Review' vs 'Final Approval'), and they verify independently. It adds a layer of semantic meaning to the file verification.
-Privacy-First Architecture: Many 'blockchain storage' apps upload the file to IPFS. We do not. We strictly store the proof, not the data. This makes it compliant with strict privacy laws like GDPR, as user data is never exposed publicly."
-5. Conclusion
-"In summary, File Integrity Chain brings the security of the blockchain to everyday file management, wrapped in a user-friendly, privacy-focused interface. Thank you."
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
+```
+
+The app will run at `http://localhost:5173`.
+
+### 4. Configure MetaMask
+
+1.  Open MetaMask and add a custom network:
+    -   **Network Name:** Localhost 8545
+    -   **RPC URL:** `http://127.0.0.1:8545`
+    -   **Chain ID:** `31337`
+    -   **Currency Symbol:** ETH
+2.  Import a test account:
+    -   Copy a "Private Key" from the `npx hardhat node` terminal output (Account #0 or #1).
+    -   In MetaMask, go to **Accounts -> Import Account** and paste the private key.
+
+## 📖 Usage Guide
+
+### Registering a File (Issuer)
+1.  Go to the **Register** tab.
+2.  Connect your MetaMask wallet.
+3.  Select a file and enter a **Purpose** (e.g., "Semester Project Final").
+4.  Click **Register**. Confirm the transaction in MetaMask.
+5.  *Result:* The file's hash + purpose is permanently stored on-chain.
+
+### Verifying a File (Holder)
+1.  Go to the **Verify** tab.
+2.  Select the file you possess.
+3.  Enter the **Purpose** it was registered with.
+4.  Click **Verify Integrity**.
+5.  *Result:* The app checks if the file matches the blockchain record.
+    -   ✅ **Valid:** File is authentic and unaltered.
+    -   ❌ **Invalid:** File has been modified or purpose is incorrect.
+    -   ⏱ **Expired:** The verification period (if set) has passed.
+
+### Public Verification (Third Party)
+1.  Go to the **Public** tab.
+2.  Upload the document and enter the purpose.
+3.  Click **Verify**.
+4.  *Result:* Instant verification without needing a wallet connection.
+
+## 📂 Project Structure
+
+```
+file-integrity-chain/
+├── contracts/          # Solidity smart contracts
+├── frontend/           # React application
+│   ├── src/
+│   │   ├── components/ # UI Components
+│   │   ├── contract.ts # Contract address & ABI
+│   │   ├── hashFile.ts # Hashing logic (SHA-256)
+│   │   └── App.tsx     # Main application logic
+├── ignition/           # Hardhat deployment modules
+└── test/               # Smart contract tests
+```
+
+## 📄 License
+
+This project is licensed under the MIT License.
