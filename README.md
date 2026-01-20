@@ -15,10 +15,103 @@ A decentralized application (DApp) for verifying the integrity and authenticity 
 
 ## 🛠️ Tech Stack
 
--   **Frontend:** React (Vite), TypeScript, Tailwind CSS
--   **Blockchain:** Hardhat (Development Environment), Ethers.js (Interaction)
--   **Smart Contract:** Solidity
--   **Styling:** Lucide React (Icons), Custom Animations
+### Frontend
+-   **Framework:** React 19.2.0 with Vite 7.2.4
+-   **Language:** TypeScript 5.9.3
+-   **Styling:** Tailwind CSS 4.1.18 with @tailwindcss/vite plugin
+-   **Icons:** Lucide React 0.562.0
+-   **Blockchain Interaction:** Ethers.js 6.16.0
+-   **PDF Generation:** jsPDF 4.0.0
+-   **QR Code:** qrcode.react 4.2.0
+
+### Backend (Smart Contracts)
+-   **Development Environment:** Hardhat 2.22.2
+-   **Smart Contract Language:** Solidity (^0.8.20)
+-   **Blockchain Library:** Ethers.js 6.14.0
+-   **Testing:** Chai 4.2.0, Mocha
+-   **Type Generation:** TypeChain 8.3.0
+
+### Development Tools
+-   **Build Tool:** Vite 7.2.4
+-   **Linting:** ESLint 9.39.1 with TypeScript support
+-   **Type Checking:** TypeScript ~5.9.3
+-   **Process Management:** Concurrently 9.2.1
+-   **Node Runtime:** ts-node 10.9.2
+
+### Hardhat Plugins & Tools
+-   **@nomicfoundation/hardhat-toolbox** 6.1.0 - Complete Hardhat setup
+-   **@nomicfoundation/hardhat-ethers** 3.1.0 - Ethers.js integration
+-   **@nomicfoundation/hardhat-chai-matchers** 2.1.0 - Testing matchers
+-   **@nomicfoundation/hardhat-verify** 2.1.0 - Contract verification
+-   **@nomicfoundation/hardhat-ignition** 0.15.13 - Deployment system
+-   **hardhat-gas-reporter** 2.3.0 - Gas usage reporting
+-   **solidity-coverage** 0.8.1 - Code coverage
+
+## 📦 Complete Package List
+
+### Root Project Dependencies
+```json
+{
+  "dependencies": {
+    "qrcode.react": "^4.2.0"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "2.1.0",
+    "@nomicfoundation/hardhat-ethers": "3.1.0",
+    "@nomicfoundation/hardhat-ignition": "0.15.13",
+    "@nomicfoundation/hardhat-ignition-ethers": "0.15.14",
+    "@nomicfoundation/hardhat-network-helpers": "1.1.0",
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "@nomicfoundation/hardhat-verify": "2.1.0",
+    "@nomicfoundation/ignition-core": "0.15.13",
+    "@typechain/ethers-v6": "0.5.0",
+    "@typechain/hardhat": "9.0.0",
+    "@types/chai": "4.2.0",
+    "@types/minimatch": "^6.0.0",
+    "@types/mocha": "^10.0.10",
+    "chai": "4.2.0",
+    "concurrently": "^9.2.1",
+    "ethers": "6.14.0",
+    "hardhat": "2.22.2",
+    "hardhat-gas-reporter": "2.3.0",
+    "minimatch": "^10.1.1",
+    "solidity-coverage": "0.8.1",
+    "ts-node": "^10.9.2",
+    "typechain": "8.3.0",
+    "typescript": "^5.9.3"
+  }
+}
+```
+
+### Frontend Dependencies
+```json
+{
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.18",
+    "ethers": "^6.16.0",
+    "jspdf": "^4.0.0",
+    "lucide-react": "^0.562.0",
+    "qrcode.react": "^4.2.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.4",
+    "vite": "^7.2.4"
+  }
+}
+```
 
 ## 🚀 Getting Started
 
