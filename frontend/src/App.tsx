@@ -11,6 +11,7 @@ import {
 import { hashFile } from "./hashFile";
 import { getContract } from "./contract";
 import PublicVerify from "./PublicVerify";
+import VerificationResult from "./VerificationResult";
 
 type Tab = "register" | "verify" | "public";
 
@@ -20,6 +21,7 @@ export default function App() {
   const [purpose, setPurpose] = useState("");
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
+  const [verificationResult, setVerificationResult] = useState<any>(null);
   // Default to true for Drizzle aesthetic
   const dark = true;
 
@@ -74,6 +76,7 @@ export default function App() {
     try {
       setLoading(true);
       setStatus("Hashing file locally…");
+      setVerificationResult(null);
 
       // Pass purpose to hash
       const hash = await hashFile(file, purpose);
@@ -85,21 +88,19 @@ export default function App() {
       const [valid, issuer, purposeRes, issuedAt, expiresAt] =
         await contract.verifyFile(`0x${hash}`);
 
-      const now = Math.floor(Date.now() / 1000);
-      const expired = expiresAt !== 0 && now > Number(expiresAt);
-
-      if (valid && !expired) {
-        setStatus(
-          `VALID ✅\nIssuer: ${issuer}\nPurpose: ${purposeRes}\nIssued: ${new Date(Number(issuedAt) * 1000).toLocaleString()}`,
-        );
-      } else if (valid && expired) {
-        setStatus("⏱ EXPIRED – proof no longer valid");
-      } else {
-        setStatus("❌ INVALID – file modified or not registered");
-      }
+      setVerificationResult({
+        valid,
+        hash,
+        issuer,
+        purpose: purposeRes,
+        issuedAt: Number(issuedAt),
+        expiresAt: Number(expiresAt),
+      });
+      setStatus("");
     } catch (e) {
       console.error(e);
       setStatus("❌ Verification failed");
+      setVerificationResult(null);
     } finally {
       setLoading(false);
     }
@@ -127,19 +128,18 @@ export default function App() {
           </div>
 
           <nav className="flex items-center gap-1 p-1 rounded-full border border-white/5 bg-white/5">
-            {[ 
-              { id: "register", label: "Register" }, 
+            {[
+              { id: "register", label: "Register" },
               { id: "verify", label: "Verify" },
-              { id: "public", label: "Public" } 
+              { id: "public", label: "Public" }
             ].map((t) => (
-               <button
+              <button
                 key={t.id}
                 onClick={() => setTab(t.id as Tab)}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                  tab === t.id
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${tab === t.id
                     ? "bg-zinc-800 text-white shadow-sm border border-white/5"
                     : "text-zinc-400 hover:text-zinc-200 hover:bg-white/5"
-                }`}
+                  }`}
               >
                 {t.label}
               </button>
@@ -147,45 +147,45 @@ export default function App() {
           </nav>
 
           <div className="flex items-center gap-3">
-             <a href="#" className="hidden sm:flex text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
-                Documentation
-             </a>
+            <a href="#" className="hidden sm:flex text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
+              Documentation
+            </a>
           </div>
         </div>
       </header>
 
       {/* MAIN CONTENT */}
       <main className="relative z-10 w-full max-w-4xl mx-auto px-6 py-20 flex flex-col items-center">
-        
+
         {/* HERO HEADER */}
         <div className="text-center mb-16 animate-fade-up">
-           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-6">
-             <span className="relative flex h-2 w-2">
-               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-               <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-             </span>
-             Blockchain Powered Security
-           </div>
-           
-           <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-6">
-             Immutable File <br/>
-             <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-cyan-400">Verifiable Trust</span>
-           </h1>
-           
-           <p className="text-lg text-zinc-400 max-w-xl mx-auto leading-relaxed">
-             Generate cryptographic proofs for your documents and verify their integrity eternally on the blockchain.
-           </p>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-6">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+            </span>
+            Blockchain Powered Security
+          </div>
+
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-6">
+            Immutable File <br />
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-cyan-400">Verifiable Trust</span>
+          </h1>
+
+          <p className="text-lg text-zinc-400 max-w-xl mx-auto leading-relaxed">
+            Generate cryptographic proofs for your documents and verify their integrity eternally on the blockchain.
+          </p>
         </div>
 
         {/* APP INTERFACE */}
         <div className="w-full glass-card rounded-2xl p-1 overflow-hidden animate-fade-up" style={{ animationDelay: "100ms" }}>
-          
+
           <div className="bg-zinc-950/50 rounded-xl p-8 md:p-10 min-h-[400px]">
             {tab === "public" ? (
               <PublicVerify />
             ) : (
               <div className="grid md:grid-cols-2 gap-12">
-                
+
                 {/* ACTION COLUMN */}
                 <div className="space-y-6">
                   <div>
@@ -193,8 +193,8 @@ export default function App() {
                       {tab === "register" ? "Register New File" : "Verify Integrity"}
                     </h2>
                     <p className="text-sm text-zinc-500">
-                      {tab === "register" 
-                        ? "Upload a document to timestamp and secure it on-chain." 
+                      {tab === "register"
+                        ? "Upload a document to timestamp and secure it on-chain."
                         : "Check if a file matches its original registered version."}
                     </p>
                   </div>
@@ -202,7 +202,7 @@ export default function App() {
                   <div className="space-y-4">
                     {/* File Drop Area */}
                     <div className="relative group">
-                       <input
+                      <input
                         type="file"
                         id="file-upload"
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
@@ -210,22 +210,22 @@ export default function App() {
                       />
                       <div className={`
                         border border-dashed rounded-lg p-6 text-center transition-all duration-200
-                        ${file 
-                          ? "border-green-500/30 bg-green-500/5" 
+                        ${file
+                          ? "border-green-500/30 bg-green-500/5"
                           : "border-zinc-700 bg-zinc-900/50 group-hover:border-zinc-500 group-hover:bg-zinc-800/50"
                         }
                       `}>
                         <div className="flex flex-col items-center gap-3">
-                           <div className={`p-3 rounded-full ${file ? "bg-green-500/10 text-green-400" : "bg-zinc-800 text-zinc-400"}`}>
-                             {file ? <CheckCircle2 size={24} /> : <UploadCloud size={24} />}
-                           </div>
-                           <div className="text-sm">
-                             {file ? (
-                               <span className="font-medium text-green-400">{file.name}</span>
-                             ) : (
-                               <span className="text-zinc-400">Click to upload or drag and drop</span>
-                             )}
-                           </div>
+                          <div className={`p-3 rounded-full ${file ? "bg-green-500/10 text-green-400" : "bg-zinc-800 text-zinc-400"}`}>
+                            {file ? <CheckCircle2 size={24} /> : <UploadCloud size={24} />}
+                          </div>
+                          <div className="text-sm">
+                            {file ? (
+                              <span className="font-medium text-green-400">{file.name}</span>
+                            ) : (
+                              <span className="text-zinc-400">Click to upload or drag and drop</span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -250,11 +250,11 @@ export default function App() {
                       disabled={loading || !file}
                       className={`
                         w-full py-3.5 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-all
-                        ${loading || !file 
-                           ? "bg-zinc-800 text-zinc-500 cursor-not-allowed" 
-                           : tab === "register"
-                             ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_20px_-5px_rgba(79,70,229,0.5)]"
-                             : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_0_20px_-5px_rgba(16,185,129,0.5)]"
+                        ${loading || !file
+                          ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                          : tab === "register"
+                            ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_20px_-5px_rgba(79,70,229,0.5)]"
+                            : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_0_20px_-5px_rgba(16,185,129,0.5)]"
                         }
                       `}
                     >
@@ -272,24 +272,34 @@ export default function App() {
 
                 {/* OUTPUT COLUMN */}
                 <div className="relative">
-                   <div className="absolute inset-0 bg-zinc-900 rounded-xl border border-white/5 overflow-hidden flex flex-col">
+                  {verificationResult && tab === "verify" ? (
+                    <VerificationResult
+                      valid={verificationResult.valid}
+                      hash={verificationResult.hash}
+                      issuer={verificationResult.issuer}
+                      purpose={verificationResult.purpose}
+                      issuedAt={verificationResult.issuedAt}
+                      expiresAt={verificationResult.expiresAt}
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-zinc-900 rounded-xl border border-white/5 overflow-hidden flex flex-col">
                       {/* Terminal Header */}
                       <div className="h-9 border-b border-white/5 bg-zinc-900 px-4 flex items-center gap-2">
-                         <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/50" />
-                         <div className="w-2.5 h-2.5 rounded-full bg-amber-500/20 border border-amber-500/50" />
-                         <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/50" />
-                         <span className="ml-2 text-xs text-zinc-600 font-mono">output.log</span>
+                        <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/50" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-amber-500/20 border border-amber-500/50" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/50" />
+                        <span className="ml-2 text-xs text-zinc-600 font-mono">output.log</span>
                       </div>
-                      
+
                       {/* Terminal Body */}
                       <div className="p-4 font-mono text-sm text-zinc-300 overflow-y-auto flex-1 leading-relaxed">
                         {!status && !loading && (
                           <div className="h-full flex flex-col items-center justify-center text-zinc-700 space-y-2 opacity-50">
-                             <FileText size={32} />
-                             <p>Awaiting input...</p>
+                            <FileText size={32} />
+                            <p>Awaiting input...</p>
                           </div>
                         )}
-                        
+
                         {status && (
                           <div className="animate-fade-up">
                             <span className="text-zinc-500">$ </span>
@@ -298,7 +308,8 @@ export default function App() {
                           </div>
                         )}
                       </div>
-                   </div>
+                    </div>
+                  )}
                 </div>
 
               </div>

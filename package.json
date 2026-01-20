@@ -4,20 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-      "dev": "concurrently \"yarn chain\" \"yarn frontend\"",
-      "chain": "hardhat node",
-      "deploy": "hardhat run scripts/deploy.ts --network localhost",
-      "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia",
-      "compile": "hardhat compile",
-      "clean": "hardhat clean",
-      "test": "hardhat test",
-      "frontend": "cd frontend && yarn dev",
-      "frontend:build": "cd frontend && yarn build",
-      "frontend:preview": "cd frontend && yarn preview",
-      "lint": "eslint . --ext ts,tsx",
-      "format": "prettier --write .",
-      "reset": "rimraf artifacts cache node_modules && yarn install"
-    },
+    "dev": "concurrently \"yarn chain\" \"yarn frontend\"",
+    "chain": "hardhat node",
+    "deploy": "hardhat run scripts/deploy.ts --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia",
+    "compile": "hardhat compile",
+    "clean": "hardhat clean",
+    "test": "hardhat test",
+    "frontend": "cd frontend && yarn dev",
+    "frontend:build": "cd frontend && yarn build",
+    "frontend:preview": "cd frontend && yarn preview",
+    "lint": "eslint . --ext ts,tsx",
+    "format": "prettier --write .",
+    "reset": "rimraf artifacts cache node_modules && yarn install"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -46,5 +46,8 @@
     "ts-node": "^10.9.2",
     "typechain": "8.3.0",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "qrcode.react": "^4.2.0"
   }
 }
